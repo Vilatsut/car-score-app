@@ -106,7 +106,23 @@ year = st.selectbox("Select Year", sorted(filtered_years, reverse=True))
 
 km = st.number_input("Driven Kilometers", min_value=0)
 
+if "score_history" not in st.session_state:
+    st.session_state.score_history = []
+
 # --- Scoring ---
 if st.button("Score This Car"):
     score = score_car(make, model, year, km, df)
     st.write(f"Score: {score}/10")
+
+    st.session_state.score_history.insert(0, {
+        "Make": make,
+        "Model": model,
+        "Year": year,
+        "Kilometers": km,
+        "Score": score,
+    })
+
+st.markdown("## Score History")
+for record in st.session_state.score_history:
+    st.write(f"{record['Make']} — {record['Model']} — {record['Year']} — "
+             f"{record['Kilometers']} km — Score: {record['Score']}/10")
